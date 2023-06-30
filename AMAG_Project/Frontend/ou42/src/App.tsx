@@ -127,6 +127,7 @@ function App() {
   return (
     <>
       <Global styles={globalStyle} />
+      {/* <h1>{process.env.REACT_APP_PASSWORD}</h1> */}
       <Router>
         <Routes>
           {/* 유저 홈 */}
