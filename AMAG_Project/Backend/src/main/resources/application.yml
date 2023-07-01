@@ -1,0 +1,92 @@
+server:
+  port: 8088
+  servlet:
+    context-path: /
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+logging:
+  level:
+    com.miracle.AMAG: debug
+
+spring:
+  main:
+    allow-circular-references: true
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://172.42.0.3:3306/SHARE42_TOGETHER?serverTimezone=Asia/Seoul&useUnicode=true&characterEncoding=utf8
+    username: ssafy
+    password: rhddbtkdl123!@#
+
+  data:
+    redis:
+      port: 6379
+      host: 172.42.0.4
+      password: rhddbtkdl123!@#
+    mongodb:
+      uri: mongodb://share42:ssafy8@52.79.216.253:27017/share42?authSource=admin
+
+  logging:
+    level:
+      org.hibernate:
+        type.descriptor.sql: trace
+        SQL: debug
+
+  mvc:
+    view:
+      prefix: /templates/
+      suffix: .mustache
+
+  jpa:
+    hibernate:
+      ddl-auto: validate #create update none
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        physical-strategy: com.miracle.AMAG.config.CamelCaseToSnakeAndUpperCaseStrategy
+
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+#  websocket:
+#    buffer-size : 1048576
+
+springdoc:
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+
+jwt:
+  header: Authorization
+  secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
+  token-validity-in-seconds: 86400
+
+image:
+  url:
+    windows: C:/Users/SSAFY/Downloads/images
+    linux: /home/ubuntu/images
+
+servlet:
+  multipart:
+    max-file-size: 20MB
+
+klaytn:
+  accessKeyId: k
+  secretAccessKey: k
+  authorization: Basic k
+  chainId: 1001
+
+kakao:
+  restApiKey: k
+
+naver:
+  naver-cloud-sms:
+    accessKey: k
+    secretKey: k
+    serviceId: ncp:sms:kr:0000:share42
+    senderPhone: 01011111111
+
+bootPay:
+  applicationID: k
+  privateKey: k
