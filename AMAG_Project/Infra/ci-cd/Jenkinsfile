@@ -8,20 +8,18 @@ pipeline {
     }
 
     environment {
-        REPOSITORY_NAME = 'S08P31D102'
-        REPOSITORY_ADDRESS = 'lab.ssafy.com/s08-final/S08P31D102.git'
-        DOCKER_REGISTRY_URL = 'https://registry.hub.docker.com'
-        DOCKER_HUB_CREDENTIALS = 'DockerHub_Account'
+        REPOSITORY_NAME = 'share42-refactoring'
+        REPOSITORY_ADDRESS = 'github.com/ProjectRefactoring/share42-refactoring.git'
         DOCKER_NETWORK_NAME = 'ubuntu_share42_net'
 
-        SPRING_ROOT_PATH = 'S08P31D102/AMAG_Project/Backend'
+        SPRING_ROOT_PATH = 'share42-refactoring/AMAG_Project/Backend'
         SPRING_IMAGE_NAME = 'miracle3070/share42-spring:latest'
         SPRING_CONTAINER_NAME = 'spring-server'
         SPRING_PICTURE_PATH = '/home/ubuntu/images'
         SPRING_CONTAINER_PORT = '8088'
         SPRING_CONTAINER_IP = '172.42.1.1'
 
-        REACT_ROOT_PATH = 'S08P31D102/AMAG_Project/Frontend/ou42'
+        REACT_ROOT_PATH = 'share42-refactoring/AMAG_Project/Frontend/ou42'
         REACT_IMAGE_NAME = 'miracle3070/share42-react:latest'
         REACT_CONTAINER_NAME = 'react-server'
         REACT_CONTAINER_PORT = '3000'
@@ -53,12 +51,8 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo 'Checking out the Git repository using git clone...'
-                withCredentials([usernamePassword(credentialsId: 'GitLab_Account', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                    script {
-                        // URL 인코딩을 위해 비밀번호를 인코딩합니다.
-                        String encodedPassword = URLEncoder.encode(GIT_PASSWORD, "UTF-8")
-                        sh "git clone https://${GIT_USERNAME}:${encodedPassword}@${env.REPOSITORY_ADDRESS}"
-                    }
+                script {
+                    sh "git clone https://${env.REPOSITORY_ADDRESS}"
                 }
             }
         }
@@ -89,9 +83,6 @@ pipeline {
                 echo 'Deploying Docker container...'
                 script {
                     def dockerImage = docker.image("${env.SPRING_IMAGE_NAME}")
-                    docker.withRegistry("${env.DOCKER_REGISTRY_URL}", "${env.DOCKER_HUB_CREDENTIALS}") {
-                        dockerImage.push()
-                    }
                     dockerImage.run("-p ${env.SPRING_CONTAINER_PORT}:${env.SPRING_CONTAINER_PORT} --ip ${env.SPRING_CONTAINER_IP} --network ${env.DOCKER_NETWORK_NAME} -v ${SPRING_PICTURE_PATH}:${SPRING_PICTURE_PATH} --name ${SPRING_CONTAINER_NAME} --hostname ${SPRING_CONTAINER_NAME}")
                 }
             }
@@ -101,9 +92,7 @@ pipeline {
             steps {
                 dir(path: "${env.REACT_ROOT_PATH}") {
                     script {
-                        docker.withRegistry("${env.DOCKER_REGISTRY_URL}", "${env.DOCKER_HUB_CREDENTIALS}") {
-                            def dockerImage = docker.build("${env.REACT_IMAGE_NAME}")
-                        }
+                        def dockerImage = docker.build("${env.REACT_IMAGE_NAME}")
                     }
                 }
             }
@@ -113,9 +102,6 @@ pipeline {
             steps {
                 script {
                     def dockerImage = docker.image("${env.REACT_IMAGE_NAME}")
-                    docker.withRegistry("${env.DOCKER_REGISTRY_URL}", "${env.DOCKER_HUB_CREDENTIALS}") {
-                        dockerImage.push()
-                    }
                     dockerImage.run("-p ${env.REACT_CONTAINER_PORT}:${env.REACT_CONTAINER_PORT} --ip ${env.REACT_CONTAINER_IP} --network ${env.DOCKER_NETWORK_NAME} -v ${env.SPRING_PICTURE_PATH}:${env.NGINX_PICTURE_PATH} --name ${env.REACT_CONTAINER_NAME} --hostname ${REACT_CONTAINER_NAME}")
                 }
             }
