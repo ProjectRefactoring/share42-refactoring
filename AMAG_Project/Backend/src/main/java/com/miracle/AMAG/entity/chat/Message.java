@@ -25,7 +25,7 @@ public class Message {
     @Column(length = 100)
     private String content;
 
-    private boolean read;
+    private boolean isRead;
 
     private boolean fromCheck;
 
